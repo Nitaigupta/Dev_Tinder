@@ -20,6 +20,53 @@ app.post('/signup', async (req,res)=>{
 
 });
 
+// get user by email
+app.get('/user',async (req,res)=>{
+  const userEmail = req.body.emailId;
+  try{
+    const user = await User.find({emailId:userEmail});
+    if (user.length===0) {
+      res.status(404).send("User Not Found !!!")
+    }
+    else{
+      res.send(user);
+    }
+  }
+  catch{
+    res.status(400).send("Something Went Wrong")
+  }
+
+});
+app.get('/feed',async (req,res)=>{
+    try{
+    const user = await User.find({});
+    if (user.length===0) {
+      res.status(404).send("User Not Found !!!")
+    }
+    else{
+      res.send(user);
+    }
+  }
+
+  catch{
+    res.status(400).send("Something Went Wrong");
+  }
+
+})
+app.get('/id' , async(req,res)=>{
+  const id = req.body._id;
+  try{
+    const userid = await User.findById({_id:id}).exec();
+    res.send(userid);
+
+  }
+  catch{
+    res.status(400).send("Something Went Wrong");
+
+  }
+})
+
+
 connectDB().then(()=>{
     console.log("Databse connected Succesfully");
     app.listen(3000, () => {

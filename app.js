@@ -57,13 +57,27 @@ app.get('/id' , async(req,res)=>{
   const id = req.body._id;
   try{
     const userid = await User.findById({_id:id}).exec();
-    res.send(userid);
+    res.status(200).send(userid);
 
   }
   catch{
     res.status(400).send("Something Went Wrong");
 
   }
+})
+
+app.delete('/delete', async(req,res)=>{
+   const id = req.body._id;
+  try{
+    const userid = await User.findByIdAndDelete({_id:id});
+    res.status(200).send("User Deleted Succesully");
+
+  }
+   catch{
+    res.status(400).send("Something Went Wrong");
+
+  }
+
 })
 
 

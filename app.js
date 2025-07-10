@@ -79,8 +79,46 @@ app.delete('/delete', async(req,res)=>{
   }
 
 })
+app.patch('/updateid/:id',async(req,res)=>{
+  const id = req.params.id;
+  const data = req.body;
+  
+  try{
+  //   const ALLOWED_UPDATES = ["photoUrl","about","gender","age","skills"];
+  // const isUpdateAllowed = Object.keys(data).every((k)=>{
+  //   ALLOWED_UPDATES.includes(k);
+  // })
+  // if(!isUpdateAllowed){
+  //   throw new Error("Update Not Allowed");
+  // }
+
+      const userid = await User.findByIdAndUpdate({_id:id},data,{
+        returnDocument :"after",
+        runValidators:true,
+      });
+    res.status(200).send("User Deleted Succesully");
 
 
+  }
+   catch{
+    res.status(404).send("Something Went Wrong");
+
+  }
+})
+app.patch('/updateemail' ,async(req,res)=>{
+     const email = req.body.emailId;
+     const data = req.body;
+  try{
+ const user = await User.findOneAndUpdate({emailId:email},data);
+ res.send("User Updated Succesfuuly");
+
+
+  }
+  catch{
+    res.status(404).send("Problem in Adding the user");
+  }
+
+})
 connectDB().then(()=>{
     console.log("Databse connected Succesfully");
     app.listen(3000, () => {

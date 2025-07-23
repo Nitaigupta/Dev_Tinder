@@ -5,8 +5,12 @@ const app = express();
 const User = require("./models/User");
 const {validateSingUpData} = require("./utils/validation");
 const bcrypt = require("bcrypt");
+const cookieParser = require('cookie-parser');
+const jwt = require('jsonwebtoken');
+const {userAuth } = require("./middleware/auth")
 
 app.use(express.json());
+app.use(cookieParser())
 
 app.post('/signup', async (req,res)=>{
  
@@ -37,8 +41,11 @@ app.post('/login', async(req,res)=>{
     if(!user){
       throw new Error("Invalid Credential");
     }
-    const isPasswordValid = await bcrypt.compare(password,user.password);
+    const isPasswordValid = await user.validatePassword(password);
     if(isPasswordValid){
+      const token = await user.getJWT();
+      res.cookie("token",token,{expires: new Date(Date.now()+8*3600000)});
+
       res.send("Login Successfully");
     }
     else{
@@ -52,6 +59,22 @@ app.post('/login', async(req,res)=>{
   }
 
 })
+app.get('/profile',userAuth,async(req,res)=>{
+ try{
+   
+  const user = req.user;
+  if(!user){
+    throw new Error("User does not exist");
+  }
+
+
+  res.send(user);
+ }
+ catch(err){
+  res.status(400).send(err);
+ }
+
+});
 
 // get user by email
 app.get('/user',async (req,res)=>{

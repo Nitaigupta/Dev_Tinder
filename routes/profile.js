@@ -32,5 +32,9 @@ profileRouter.patch('/profile/edit', userAuth , async(req,res)=>{
         res.status(400).send("Error :"+err.message);
     }
 })
+profileRouter.patch('/profile/password',userAuth,async(req,res)=>{
+    res.send("Abhi Bana hai");
+
+})
 
 module.exports = profileRouter;
